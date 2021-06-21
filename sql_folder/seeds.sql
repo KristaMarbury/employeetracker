@@ -2,24 +2,24 @@ use employees;
 -- new problem... this won't work on dolphins for some reason 
 insert into employee (first_name, last_name, role_id, manager_id)
 values
-('Tim', 'Doe', 'Sales Lead', 'Asheley Rodriguez'),
-('Mike', 'Chan', 'Salesperson', 'Time Doe'),
-('Ashley', 'Rodriguez', 'Lead Engineer', null),
-('Malia', 'Brown', 'Accountant', null),
-('Sarah', 'Lourd', 'Legal Team Lead', null),
-('Tom', 'Allen', 'Layer', 'Sarah Lourd'),
-('Christian', 'Eckenrode', 'Lead Engineer', 'Mike Chan');
+('Tim', 'Doe', 1, 2),
+('Mike', 'Chan', 2, 1),
+('Ashley', 'Rodriguez', 3, 3),
+('Malia', 'Brown', 5, 5),
+('Sarah', 'Lourd', 6, 6),
+('Tom', 'Allen', 7, 6),
+('Christian', 'Eckenrode', 8, 2);
 
 insert into roles (title, salary, department_id)
 values
-('Sales Lead', 100000, 'Sales'),
-('Salesperson', 80000, 'Sales'),
-('Lead Engineer', 150000, 'Engineering'),
-('Software Engineer', 120000, 'Engineering'),
-('Accountant', 125000, 'Finance'),
-('Legal Tam Lead', 250000, 'Legal'),
-('Layer', 190000, 'Legal'),
-('Lead Engineer', 150000, 'Engineering');
+('Sales Lead', 100000, 1),
+('Salesperson', 80000, 1),
+('Lead Engineer', 150000, 2),
+('Software Engineer', 120000, 2),
+('Accountant', 125000, 3),
+('Legal Tam Lead', 250000, 4),
+('Lawyer', 190000, 4),
+('Lead Engineer', 150000, 2);
 
 insert into department (name)
 values
