@@ -4,9 +4,9 @@ insert into employee (first_name, last_name, role_id, manager_id)
 values
 ('Tim', 'Doe', 'Sales Lead', 'Asheley Rodriguez'),
 ('Mike', 'Chan', 'Salesperson', 'Time Doe'),
-('Ashley', 'Rodriguez', 'Lead Engineer', 'nobody'),
-('Malia', 'Brown', 'Accountant', 'nobody'),
-('Sarah', 'Lourd', 'Legal Team Lead', 'nobody'),
+('Ashley', 'Rodriguez', 'Lead Engineer', null),
+('Malia', 'Brown', 'Accountant', null),
+('Sarah', 'Lourd', 'Legal Team Lead', null),
 ('Tom', 'Allen', 'Layer', 'Sarah Lourd'),
 ('Christian', 'Eckenrode', 'Lead Engineer', 'Mike Chan');
 
