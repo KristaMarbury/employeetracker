@@ -3,12 +3,12 @@ class DB {
   constructor(connection) {
     this.connection = connection;
   }
-  // Find all employees, join with roles and departments to display their roles, salaries, departments, and managers
+  // Find all employees, join with roless and departments to display their roless, salaries, departments, and managers
   findAllEmployees() {
     return this.connection
       .promise()
       .query(
-        "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;"
+        "SELECT employee.id, employee.first_name, employee.last_name, roles.title, department.name AS department, roles.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN roles on employee.roles_id = roles.id LEFT JOIN department on roles.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;"
       );
   }
   // Find all employees except the given employee id
@@ -32,12 +32,12 @@ class DB {
       .promise()
       .query("DELETE FROM employee WHERE id = ?", employeeId);
   }
-  // Update the given employee's role
-  updateEmployeeRole(employeeId, roleId) {
+  // Update the given employee's roles
+  updateEmployeeroles(employeeId, rolesId) {
     return this.connection
       .promise()
-      .query("UPDATE employee SET role_id = ? WHERE id = ?", [
-        roleId,
+      .query("UPDATE employee SET roles_id = ? WHERE id = ?", [
+        rolesId,
         employeeId,
       ]);
   }
@@ -50,23 +50,23 @@ class DB {
         employeeId,
       ]);
   }
-  // Find all roles, join with departments to display the department name
-  findAllRoles() {
+  // Find all roless, join with departments to display the department name
+  findAllroless() {
     return this.connection
       .promise()
       .query(
-        "SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department on role.department_id = department.id;"
+        "SELECT roles.id, roles.title, department.name AS department, roles.salary FROM roles LEFT JOIN department on roles.department_id = department.id;"
       );
   }
-  // Create a new role
-  createRole(role) {
-    return this.connection.promise().query("INSERT INTO role SET ?", role);
+  // Create a new roles
+  createroles(roles) {
+    return this.connection.promise().query("INSERT INTO roles SET ?", roles);
   }
-  // Remove a role from the db
-  removeRole(roleId) {
+  // Remove a roles from the db
+  removeroles(rolesId) {
     return this.connection
       .promise()
-      .query("DELETE FROM role WHERE id = ?", roleId);
+      .query("DELETE FROM roles WHERE id = ?", rolesId);
   }
   // Find all departments
   findAllDepartments() {
@@ -74,12 +74,12 @@ class DB {
       .promise()
       .query("SELECT department.id, department.name FROM department;");
   }
-  // Find all departments, join with employees and roles and sum up utilized department budget
+  // Find all departments, join with employees and roless and sum up utilized department budget
   viewDepartmentBudgets() {
     return this.connection
       .promise()
       .query(
-        "SELECT department.id, department.name, SUM(role.salary) AS utilized_budget FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id GROUP BY department.id, department.name;"
+        "SELECT department.id, department.name, SUM(roles.salary) AS utilized_budget FROM employee LEFT JOIN roles on employee.roles_id = roles.id LEFT JOIN department on roles.department_id = department.id GROUP BY department.id, department.name;"
       );
   }
   // Create a new department
@@ -94,23 +94,25 @@ class DB {
       .promise()
       .query("DELETE FROM department WHERE id = ?", departmentId);
   }
-  // Find all employees in a given department, join with roles to display role titles
+  // Find all employees in a given department, join with roless to display roles titles
   findAllEmployeesByDepartment(departmentId) {
     return this.connection
       .promise()
       .query(
-        "SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department department on role.department_id = department.id WHERE department.id = ?;",
+        "SELECT employee.id, employee.first_name, employee.last_name, roles.title FROM employee LEFT JOIN roles on employee.roles_id = roles.id LEFT JOIN department department on roles.department_id = department.id WHERE department.id = ?;",
         departmentId
       );
   }
-  // Find all employees by manager, join with departments and roles to display titles and department names
+  // Find all employees by manager, join with departments and roless to display titles and department names
   findAllEmployeesByManager(managerId) {
     return this.connection
       .promise()
       .query(
-        "SELECT employee.id, employee.first_name, employee.last_name, department.name AS department, role.title FROM employee LEFT JOIN role on role.id = employee.role_id LEFT JOIN department ON department.id = role.department_id WHERE manager_id = ?;",
+        "SELECT employee.id, employee.first_name, employee.last_name, department.name AS department, roles.title FROM employee LEFT JOIN roles on roles.id = employee.roles_id LEFT JOIN department ON department.id = roles.department_id WHERE manager_id = ?;",
         managerId
       );
   }
 }
+
 module.exports = new DB(connection);
+
