@@ -2,8 +2,9 @@
 
 const inquirer = require("inquirer")
 const sql_folder = require("./sql_folder")
+// const index = require("./sql_folder/index")
 
-
+// loadprompts (inquirer choices)
 const loadMainPrompt = () => {
   inquirer.prompt([
     {
@@ -80,10 +81,10 @@ const loadMainPrompt = () => {
     // Call the appropriate function depending on what the user chose
     if (choice === 'VIEW_EMPLOYEES') {
       viewAllEmployees();
-    } else if (VIEW_EMPLOYEES_BY_DEPARTMENT) {
+    } else if ('VIEW_EMPLOYEES_BY_DEPARTMENT') {
       viewEmployeesByDepartment();
-    } else if (VIEW_EMPLOYEES_BY_MANAGER) {
-      viewEmployeesByManager();
+    } else if ('VIEW_EMPLOYEES_BY_MANAGER') {
+      viewAllEmployeesByManager();
     } else return
   })
 }
@@ -98,6 +99,7 @@ const viewAllEmployees = () => {
     .then(() => loadMainPrompt());
 };
 
+// view employees by department
 const viewEmployeesByDepartment = () => {
   db.findAllDepartments().then(([rows]) => {
     let departments = rows;
@@ -122,11 +124,34 @@ const viewEmployeesByDepartment = () => {
       .then(() => loadMainPrompts());
   });
 }
-    
-// loadprompts (inquirer choices)
+
+const viewAllEmployeesByManager = () => {
+  db.findAllEmployeesByManager().then(([rows]) => {
+    let roles = rows;
+    const rolesChoices = roles.map(({ id, name }) => ({
+      name: name,
+      value: id,
+    }));
+    prompt([
+      {
+        type: "list",
+        name: "managerId",
+        message: "Which manager would you like to see employees for?",
+        choices: rolesChoices,
+      },
+    ])
+      .then((res) => db.findAllEmployeesByManager(res.departmentId))
+      .then(([rows]) => {
+        let employees = rows;
+        console.log("\n");
+        console.table(employees);
+      })
+      .then(() => loadMainPrompts());
+  });
+};
+
+
 // selecting a choice will go to that function
-// view employees by department
-// view employees by manager
 // add employee
 // remmove emplyee
 // update employee role
@@ -138,20 +163,5 @@ const viewEmployeesByDepartment = () => {
 // add department
 // remove department
 // quit
-
-
-const readEmployees = () => {
-  connection.query("SELECT * FROM employee", (err, res) => {
-    if (err) throw err;
-    console.table(res);
-    connection.end();
-  });
-};
-
-
-
-// view employees by department
-// inqurier ask what department
-// select * from employee left join role on employee.role_id = role.id left join deparment on role.department_id = deparment.id where department = ?
 
 loadMainPrompt();

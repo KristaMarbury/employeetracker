@@ -1,4 +1,4 @@
-const connection = require('./connection')
+const connection = require('./../sql_folder/connection')
 
 class DB {
   // Keeping a reference to the connection on the class in case we need it later
@@ -9,7 +9,7 @@ class DB {
   findAllEmployees() {
     return this.connection
       .query(
-        "SELECT  *  FROM employee;"
+        "SELECT  * FROM employee.id, employee.first_name, employee.last_name, employee.role_id, employee.manager_id JOIN"
       );
   }
   // Find all employees except the given employee id
