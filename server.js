@@ -1,12 +1,13 @@
 //salary is connected to the job title
 
 const inquirer = require("inquirer")
-const sql_folder = require ("./sql_folder")
+const sql_folder = require("./sql_folder")
+
 
 const loadMainPrompt = () => {
   inquirer.prompt([
     {
-      name: "opener",
+      name: "choice",
       type: "list",
       message: "What do you want to do?",
       choices: [
@@ -75,8 +76,9 @@ const loadMainPrompt = () => {
   ])
   .then(res => {
     let choice = res.choice;
+    console.log(choice);
     // Call the appropriate function depending on what the user chose
-    if (VIEW_EMPLOYEES) {
+    if (choice === 'VIEW_EMPLOYEES') {
       viewAllEmployees();
     } else if (VIEW_EMPLOYEES_BY_DEPARTMENT) {
       viewEmployeesByDepartment();
@@ -89,12 +91,11 @@ const loadMainPrompt = () => {
 const viewAllEmployees = () => {
   sql_folder
     .findAllEmployees()
-    .then(([rows]) => {
-      let employees = rows;
+    .then((rows) => {
       console.log("\n");
-      console.table(employees);
+      console.table(rows);
     })
-    .then(() => loadMainPrompts());
+    .then(() => loadMainPrompt());
 };
 
 const viewEmployeesByDepartment = () => {
@@ -153,13 +154,4 @@ const readEmployees = () => {
 // inqurier ask what department
 // select * from employee left join role on employee.role_id = role.id left join deparment on role.department_id = deparment.id where department = ?
 
-connection.connect((err) => {
-  if (err) throw err;
-  console.log(`connected as id ${connection.threadId}`);
-  // loadprompts
-  viewAllEmployees();
-  // searchByDepartment();
-  // searchByManager();
-  readEmployees();
-  loadMainPrompt();
-});
+loadMainPrompt();
