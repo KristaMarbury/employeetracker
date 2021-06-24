@@ -85,6 +85,10 @@ const loadMainPrompt = () => {
       viewEmployeesByDepartment();
     } else if (choice === 'VIEW_EMPLOYEES_BY_MANAGER') {
       viewAllEmployeesByManager();
+    } else if (choice === 'ADD_ROLE') {
+      addRole();
+    } else if (choice == 'VIEW_ROLES') {
+      viewAllRoles();
     } else return
   })
 }
@@ -101,13 +105,15 @@ const viewAllEmployees = () => {
 
 // view employees by department
 const viewEmployeesByDepartment = () => {
-  db.findAllDepartments().then(([rows]) => {
+  sql_folder
+    .findAllDepartments().then(([rows]) => {
     let departments = rows;
     const departmentChoices = departments.map(({ id, name }) => ({
       name: name,
       value: id,
     }));
-    prompt([
+    inquirer
+    .prompt([
       {
         type: "list",
         name: "departmentId",
@@ -115,18 +121,18 @@ const viewEmployeesByDepartment = () => {
         choices: departmentChoices,
       },
     ])
-      .then((res) => db.findAllEmployeesByDepartment(res.departmentId))
+      .then((res) => sql_folder.findAllEmployeesByDepartment(res.departmentId))
       .then(([rows]) => {
         let employees = rows;
         console.log("\n");
         console.table(employees);
       })
-      .then(() => loadMainPrompts());
+      .then(() => loadMainPrompt());
   });
 }
 
 const viewAllEmployeesByManager = () => {
-  db.findAllEmployeesByManager().then(([rows]) => {
+  sql_folder.findAllEmployeesByManager().then(([rows]) => {
     let roles = rows;
     const rolesChoices = roles.map(({ id, name }) => ({
       name: name,
@@ -140,16 +146,56 @@ const viewAllEmployeesByManager = () => {
         choices: rolesChoices,
       },
     ])
-      .then((res) => db.findAllEmployeesByManager(res.departmentId))
+      .then((res) => sql_folder.findAllEmployeesByManager(res.departmentId))
       .then(([rows]) => {
         let employees = rows;
         console.log("\n");
         console.table(employees);
       })
-      .then(() => loadMainPrompts());
+      .then(() => loadMainPrompt());
   });
 };
 
+const viewAllRoles = () => {
+  sql_folder
+    .findAllRoles()
+    .then(([rows]) => {
+      console.log("\n");
+      console.table(rows);
+    })
+    .then(() => loadMainPrompt());
+};
+
+const addRole = () => {
+  sql_folder.findAllDepartments().then(([rows]) => {
+    let departments = rows;
+    const departmentChoices = departments.map(({ id, name }) => ({
+      name: name,
+      value: id,
+    }));
+    inquirer
+    .prompt([
+      {
+        name: "title",
+        message: "What is the name of the role?",
+      },
+      {
+        name: "salary",
+        message: "What is the salary of the role?",
+      },
+      {
+        type: "list",
+        name: "department_id",
+        message: "Which department does the role belong to?",
+        choices: departmentChoices,
+      },
+    ]).then((role) => {
+      sql_folder.createRole(role)
+        .then(() => console.log(`Added ${role.title} to the database`))
+        .then(() => loadMainPrompt());
+    });
+  });
+};
 
 // selecting a choice will go to that function
 // add employee

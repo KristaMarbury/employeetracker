@@ -1,6 +1,6 @@
 const connection = require('./connection')
 
-class DB {
+class Sql_Folder {
   // Keeping a reference to the connection on the class in case we need it later
   constructor(connection) {
     this.connection = connection;
@@ -36,7 +36,7 @@ class DB {
   updateEmployeeroles(employeeId, rolesId) {
     return this.connection
       .promise()
-      .query("UPDATE employee SET roles_id = ? WHERE id = ?", [
+      .query("UPDATE employee SET role_id = ? WHERE id = ?", [
         rolesId,
         employeeId,
       ]);
@@ -51,7 +51,7 @@ class DB {
       ]);
   }
   // Find all roless, join with departments to display the department name
-  findAllroless() {
+  findAllRoles() {
     return this.connection
       .promise()
       .query(
@@ -59,11 +59,11 @@ class DB {
       );
   }
   // Create a new roles
-  createroles(roles) {
+  createRole(roles) {
     return this.connection.promise().query("INSERT INTO roles SET ?", roles);
   }
   // Remove a roles from the db
-  removeroles(rolesId) {
+  removeRole(rolesId) {
     return this.connection
       .promise()
       .query("DELETE FROM roles WHERE id = ?", rolesId);
@@ -74,12 +74,12 @@ class DB {
       .promise()
       .query("SELECT department.id, department.name FROM department;");
   }
-  // Find all departments, join with employees and roless and sum up utilized department budget
+  // Find all departments, join with employees and roles and sum up utilized department budget
   viewDepartmentBudgets() {
     return this.connection
       .promise()
       .query(
-        "SELECT department.id, department.name, SUM(roles.salary) AS utilized_budget FROM employee LEFT JOIN roles on employee.roles_id = roles.id LEFT JOIN department on roles.department_id = department.id GROUP BY department.id, department.name;"
+        "SELECT department.id, department.name, SUM(roles.salary) AS utilized_budget FROM employee LEFT JOIN roles on employee.role_id = roles.id LEFT JOIN department on roles.department_id = department.id GROUP BY department.id, department.name;"
       );
   }
   // Create a new department
@@ -99,20 +99,20 @@ class DB {
     return this.connection
       .promise()
       .query(
-        "SELECT employee.id, employee.first_name, employee.last_name, roles.title FROM employee LEFT JOIN roles on employee.roles_id = roles.id LEFT JOIN department department on roles.department_id = department.id WHERE department.id = ?;",
+        "SELECT employee.id, employee.first_name, employee.last_name, roles.title FROM employee LEFT JOIN roles on employee.role_id = roles.id LEFT JOIN department department on roles.department_id = department.id WHERE department.id = ?;",
         departmentId
       );
   }
-  // Find all employees by manager, join with departments and roless to display titles and department names
+  // Find all employees by manager, join with departments and roles to display titles and department names
   findAllEmployeesByManager(managerId) {
     return this.connection
       .promise()
       .query(
-        "SELECT employee.id, employee.first_name, employee.last_name, department.name AS department, roles.title FROM employee LEFT JOIN roles on roles.id = employee.roles_id LEFT JOIN department ON department.id = roles.department_id WHERE manager_id = ?;",
+        "SELECT employee.id, employee.first_name, employee.last_name, department.name AS department, roles.title FROM employee LEFT JOIN roles on roles.id = employee.role_id LEFT JOIN department ON department.id = roles.department_id WHERE manager_id = ?;",
         managerId
       );
   }
 }
 
-module.exports = new DB(connection);
+module.exports = new Sql_Folder(connection);
 
