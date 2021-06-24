@@ -1,4 +1,4 @@
-const connection = require('./../sql_folder/connection')
+const connection = require('./connection')
 
 class DB {
   // Keeping a reference to the connection on the class in case we need it later
@@ -7,10 +7,9 @@ class DB {
   }
   // Find all employees, join with roless and departments to display their roless, salaries, departments, and managers
   findAllEmployees() {
-    return this.connection
-      .query(
-        "SELECT  * FROM employee.id, employee.first_name, employee.last_name, employee.role_id, employee.manager_id JOIN"
-      );
+    return this.connection.query(
+      "SELECT employee.id, employee.first_name, employee.last_name, roles.id, department.name AS department, roles.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN roles on employees.roles_id = roles.id LEFT JOIN department on roles.department_id = department.id LEFT JOIN employees manager on manager.id = employee.manager_id;"
+    );
   }
   // Find all employees except the given employee id
   findAllPossibleManagers(employeeId) {

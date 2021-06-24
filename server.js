@@ -81,9 +81,9 @@ const loadMainPrompt = () => {
     // Call the appropriate function depending on what the user chose
     if (choice === 'VIEW_EMPLOYEES') {
       viewAllEmployees();
-    } else if ('VIEW_EMPLOYEES_BY_DEPARTMENT') {
+    } else if (choice === 'VIEW_EMPLOYEES_BY_DEPARTMENT') {
       viewEmployeesByDepartment();
-    } else if ('VIEW_EMPLOYEES_BY_MANAGER') {
+    } else if (choice === 'VIEW_EMPLOYEES_BY_MANAGER') {
       viewAllEmployeesByManager();
     } else return
   })
