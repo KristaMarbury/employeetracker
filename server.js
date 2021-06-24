@@ -89,6 +89,12 @@ const loadMainPrompt = () => {
       addRole();
     } else if (choice == 'VIEW_ROLES') {
       viewAllRoles();
+    } else if (choice === 'ADD_DEPARTMENT') {
+      addDepartment();
+    } else if (choice === 'ADD_EMPLOYEE') {
+      addEmployee();
+    } else if (choice === 'REMOVE_DEPARTMENT') {
+      removeDepartment();
     } else return
   })
 }
@@ -103,33 +109,42 @@ const viewAllEmployees = () => {
     .then(() => loadMainPrompt());
 };
 
+const viewAllDepartments = () => {
+  sql_folder
+    .findAllDepartments()
+    .then(([rows]) => {
+      console.log("\n");
+      console.table(rows);
+    })
+    .then(() => loadMainPrompt());
+};
 // view employees by department
 const viewEmployeesByDepartment = () => {
   sql_folder
     .findAllDepartments().then(([rows]) => {
-    let departments = rows;
-    const departmentChoices = departments.map(({ id, name }) => ({
-      name: name,
-      value: id,
-    }));
-    inquirer
-    .prompt([
-      {
-        type: "list",
-        name: "departmentId",
-        message: "Which department would you like to see employees for?",
-        choices: departmentChoices,
-      },
-    ])
-      .then((res) => sql_folder.findAllEmployeesByDepartment(res.departmentId))
-      .then(([rows]) => {
-        let employees = rows;
-        console.log("\n");
-        console.table(employees);
-      })
-      .then(() => loadMainPrompt());
-  });
-}
+      let departments = rows;
+      const departmentChoices = departments.map(({ id, name }) => ({
+        name: name,
+        value: id,
+      }));
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            name: "departmentId",
+            message: "Which department would you like to see employees for?",
+            choices: departmentChoices,
+          },
+        ])
+        .then((res) => sql_folder.findAllEmployeesByDepartment(res.departmentId))
+        .then(([rows]) => {
+          let employees = rows;
+          console.log("\n");
+          console.table(employees);
+        })
+        .then(() => loadMainPrompt());
+    });
+};
 
 const viewAllEmployeesByManager = () => {
   sql_folder.findAllEmployeesByManager().then(([rows]) => {
@@ -197,6 +212,104 @@ const addRole = () => {
   });
 };
 
+const addDepartment = () => {
+  inquirer
+    .prompt([
+      {
+        name: "name",
+        message: "What is the name of the department?",
+      },
+    ]).then((res) => {
+      let name = res;
+      sql_folder.createDepartment(name)
+        .then(() => console.log(`Added ${name.name} to the database`))
+        .then(() => loadMainPrompt());
+    });
+};
+
+const addEmployee = () => {
+  inquirer
+  .prompt([
+    {
+      name: "first_name",
+      message: "What is the employee's first name?",
+    },
+    {
+      name: "last_name",
+      message: "What is the employee's last name?",
+    },
+  ]).then((res) => {
+    let firstName = res.first_name;
+    let lastName = res.last_name;
+    sql_folder.findAllRoles().then(([rows]) => {
+      let roles = rows;
+      const roleChoices = roles.map(({ id, title }) => ({
+        name: title,
+        value: id,
+      }));
+      inquirer
+      .prompt({
+        type: "list",
+        name: "roleId",
+        message: "What is the employee's role?",
+        choices: roleChoices,
+      }).then((res) => {
+        let roleId = res.roleId;
+        sql_folder.findAllEmployees().then(([rows]) => {
+          let employees = rows;
+          const managerChoices = employees.map(
+            ({ id, first_name, last_name }) => ({
+              name: `${first_name} ${last_name}`,
+              value: id,
+            })
+          );
+          managerChoices.unshift({ name: "None", value: null });
+          inquirer
+          .prompt({
+            type: "list",
+            name: "managerId",
+            message: "Who is the employee's manager?",
+            choices: managerChoices,
+          })
+            .then((res) => {
+              let employee = {
+                manager_id: res.managerId,
+                role_id: roleId,
+                first_name: firstName,
+                last_name: lastName,
+              };
+              sql_folder.createEmployee(employee);
+            })
+            .then(() =>
+              console.log(`Added ${firstName} ${lastName} to the database`)
+            )
+            .then(() => loadMainPrompt());
+        });
+      });
+    });
+  });
+};
+
+const removeDepartment = () => {
+  sql_folder.findAllDepartments().then(([rows]) => {
+    let departments = rows;
+    const departmentChoices = departments.map(({ id, name }) => ({
+      name: name,
+      value: id,
+    }));
+    inquirer
+    .prompt({
+      type: "list",
+      name: "departmentId",
+      message:
+        "Which department would you like to remove? (Warning: This will also remove associated roles and employees)",
+      choices: departmentChoices,
+    })
+      .then((res) => sql_folder.removeDepartment(res.departmentId))
+      .then(() => console.log(`Removed department from the database`))
+      .then(() => loadMainPrompt());
+  });
+};
 // selecting a choice will go to that function
 // add employee
 // remmove emplyee
