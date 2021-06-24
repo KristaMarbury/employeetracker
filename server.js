@@ -92,7 +92,7 @@ const loadMainPrompt = () => {
 const viewAllEmployees = () => {
   sql_folder
     .findAllEmployees()
-    .then((rows) => {
+    .then(([rows]) => {
       console.log("\n");
       console.table(rows);
     })
