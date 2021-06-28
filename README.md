@@ -21,7 +21,7 @@ The application can be accessed by forking this github!
 
 # Known Bugs
 
-The update employee roles function is not working. 
+The update employee roles function and the find employees by manager function work. 
 
 # License
 
