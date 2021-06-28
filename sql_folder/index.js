@@ -1,4 +1,4 @@
-const connection = require('./connection')
+const connection = require('../sql_folder/connection')
 
 class Sql_Folder {
   // Keeping a reference to the connection on the class in case we need it later
@@ -33,7 +33,7 @@ class Sql_Folder {
       .query("DELETE FROM employee WHERE id = ?", employeeId);
   }
   // Update the given employee's roles
-  updateEmployeeroles(employeeId, rolesId) {
+  updateEmployeeRoles(employeeId, rolesId) {
     return this.connection
       .promise()
       .query("UPDATE employee SET role_id = ? WHERE id = ?", [

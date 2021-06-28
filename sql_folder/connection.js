@@ -9,7 +9,8 @@ const connection = mysql.createConnection({
 });
 
 connection.connect((err) => {
-    console.log("connected")
+  console.log("connected");
 });
 connection.query = util.promisify(connection.query);
+
 module.exports = connection;
