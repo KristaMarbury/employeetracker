@@ -331,28 +331,46 @@ const removeDepartment = () => {
 };
 
 // update employee role
-const updateEmployeeRoles = () => {
+const updateEmployeeRole = () => {
   sql_folder.findAllEmployees().then(([rows]) => {
     let employees = rows;
     const employeeChoices = employees.map(({ id, name }) => ({
       name: name,
       value: id,
     }));
-  inquirer
-    .prompt([
-    {
-      name: "name",
-      message: "Which employee's info do you want to update?",
-    },
-    ])
-    .then((res) => {
-      let name = res;
-      sql_folder
-        .updateEmployeeRoles(name)
-        .then(() => console.log(`Changed ${name.name} in the database`))
-        .then(() => loadMainPrompt());
-    });
-    
+    inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "name",
+          message: "Which employee's info do you want to update?",
+          choice: employeeChoices,
+        },
+      
+      ])
+      .then((res) => {
+         let roles = rows;
+        const employeeRoleChoices = roles.map(({ id, name }) => ({
+        name: name,
+        value: id,
+        }));
+        inquirer
+          .prompt([
+        {
+          name: "role",
+          type: "list",
+          choices: employeeRoleChoices,
+          message: "What is their new role?",
+        },
+      ]);
+        let name = res.employeeChoices;
+        let id = res.employeeRoleChoices;
+        sql_folder
+          .updateEmployeeRoles(name, id)
+          .then(() => console.log(`Changed ${name.name} in the database`))
+          .then(() => loadMainPrompt());
+      });
+  });
 };
 
 
