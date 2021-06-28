@@ -21,7 +21,7 @@ The application can be accessed by forking this github!
 
 # Known Bugs
 
-The update employee roles function and the find employees by manager function work. 
+The update employee roles function and the find employees by manager function work. After clicking on remove employee, the terminal refuses to take any input. 
 
 # License
 
