@@ -2,30 +2,26 @@
 
 Built by K-Leigh Marbury
 
-A web application that allows users to... A few screenshots of the website can be found below: 
-
-
-
+A backend that allows users to peruse and interact with an employee database. 
 
 # Technologies Used
 
-    - HTML
-    - CSS
     - Javascript
     - Express
+    - Inquirer
     - Node
 
 # Description
 
-This browser application allows a user write their ideas, and save them using the save button which appears after the client begins typing. If the note needs to be deleted, then clicking the trashcan next to each note allows the client to delete that specific note. 
+This application allows a user to view, remove, and add employees to a database! 
 
 # Setup/Installation Requirements
 
-The application can be accessed at 
+The application can be accessed by forking this github! 
 
 # Known Bugs
 
-There are no known bugs at this time.
+The update employee roles function is not working. 
 
 # License
 
