@@ -74,14 +74,6 @@ class Sql_Folder {
       .promise()
       .query("SELECT department.id, department.name FROM department;");
   }
-  // Find all departments, join with employees and roles and sum up utilized department budget
-  viewDepartmentBudgets() {
-    return this.connection
-      .promise()
-      .query(
-        "SELECT department.id, department.name, SUM(roles.salary) AS utilized_budget FROM employee LEFT JOIN roles on employee.role_id = roles.id LEFT JOIN department on roles.department_id = department.id GROUP BY department.id, department.name;"
-      );
-  }
   // Create a new department
   createDepartment(department) {
     return this.connection
