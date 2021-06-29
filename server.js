@@ -334,41 +334,50 @@ const removeDepartment = () => {
 const updateEmployeeRole = () => {
   sql_folder.findAllEmployees().then(([rows]) => {
     let employees = rows;
-    const employeeChoices = employees.map(({ id, name }) => ({
-      name: name,
+    const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
+      name: `${first_name} ${last_name}`,
       value: id,
     }));
     inquirer
       .prompt([
         {
           type: "list",
-          name: "name",
+          name: "employeeID",
           message: "Which employee's info do you want to update?",
-          choice: employeeChoices,
+          choices: employeeChoices,
         },
       
       ])
       .then((res) => {
-         let roles = rows;
-        const employeeRoleChoices = roles.map(({ id, name }) => ({
-        name: name,
-        value: id,
-        }));
-        inquirer
-          .prompt([
-        {
-          name: "role",
-          type: "list",
-          choices: employeeRoleChoices,
-          message: "What is their new role?",
-        },
-      ]);
-        let name = res.employeeChoices;
-        let id = res.employeeRoleChoices;
-        sql_folder
-          .updateEmployeeRoles(name, id)
-          .then(() => console.log(`Changed ${name.name} in the database`))
-          .then(() => loadMainPrompt());
+        let employeeID = res.employeeID
+        sql_folder.findAllRoles()
+          .then(([rows]) => {
+            let roles = rows;
+            const employeeRoleChoices = roles.map(({ id, title }) => ({
+              name: title,
+              value: id,
+            }));
+            inquirer
+              .prompt([
+                {
+                  name: "role",
+                  type: "list",
+                  choices: employeeRoleChoices,
+                  message: "What is their new role?",
+                },
+              ])
+            // let name = res.employeeChoices;
+            // let id = res.employeeRoleChoices;
+            .then (res => sql_folder
+              .updateEmployeeRoles(employeeID, res.role))
+              .then(() =>
+                console.log(
+                  `Changed ${employees.name} role in the database`
+                )
+                )
+      
+              .then(() => loadMainPrompt());
+          })
       });
   });
 };
