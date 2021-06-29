@@ -1,5 +1,4 @@
 const inquirer = require("inquirer");
-const { updateEmployeeManager } = require("./sql_folder");
 const sql_folder = require("./sql_folder");
 // const index = require("./sql_folder/index")
 
@@ -97,6 +96,8 @@ const loadMainPrompt = () => {
         viewAllDepartments();
       } else if (choice === "UPDATE_EMPLOYEE_ROLE") {
         updateEmployeeRole();
+      } else if (choice === "REMOVE_EMPLOYEE") {
+        removeEmployee();
       } else return;
     });
 };
@@ -377,9 +378,29 @@ const updateEmployeeRole = () => {
       });
   });
 };
-
-
 // remmove emplyee
+const removeEmployee = () => {
+  sql_folder.findAllEmployees().then(([rows]) => {
+    let employees = rows;
+    const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
+      name: `${first_name} ${last_name}`,
+      value: id,
+    }));
+    inquirer
+      .prompt({
+        type: "list",
+        name: "employeeId",
+        message:
+          "Which employee would you like to remove?",
+        choices: employeeChoices,
+      })
+      .then((res) => sql_folder.removeEmployee(res.employeeId))
+      .then(() => console.log(`Removed employee from the database`))
+      .then(() => loadMainPrompt());
+  });
+};
+
+
 
 // update employee manager
 // remove role

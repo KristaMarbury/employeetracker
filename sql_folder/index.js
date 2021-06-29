@@ -86,7 +86,7 @@ class Sql_Folder {
       .promise()
       .query("DELETE FROM department WHERE id = ?", departmentId);
   }
-  // Find all employees in a given department, join with roless to display roles titles
+  // Find all employees in a given department, join with roles to display roles titles
   findAllEmployeesByDepartment(departmentId) {
     return this.connection
       .promise()
