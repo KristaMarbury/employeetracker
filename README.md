@@ -4,8 +4,7 @@ Built by K-Leigh Marbury
 
 A backend that allows users to peruse and interact with an employee database. A picture showing the menu can be found below:
 
-![Screen Shot 2021-06-26 at 10 49 48 AM](https://user-images.githubusercontent.com/78391731/124175396-2d3d0500-da73-11eb-8279-a482be9ecf0b.png)
-
+![Screen Shot 2021-07-01 at 1 46 24 PM](https://user-images.githubusercontent.com/78391731/124175495-4c3b9700-da73-11eb-9453-a31a2414f4f6.png)
 
 # Technologies Used
 
